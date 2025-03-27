@@ -1,5 +1,18 @@
 {
-  "name": "hardhat-project",
+  "name": "JP Stacker Gaurd",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "node": "npx hardhat node",
+    "test": "npx hardhat test",
+    "size": "npx hardhat size-contracts",
+    "deploy-local": "npx hardhat run --network localhost scripts/deploy.js",
+    "deploy-mumbai": "npx hardhat run --network polygon_mumbai scripts/deploy.js",
+    "deploy-matic": "npx hardhat run --network matic scripts/deploy.js",
+    "sk01": "graph init --product hosted-service lakshman-jdp/cntv8",
+    "sk02": "graph codegen && graph build",
+    "sk03": "graph auth --product hosted-service somekey",
+    "sk04": "graph deploy --product hosted-service lakshman-jdp/cntv8"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "hardhat": "^2.22.19",

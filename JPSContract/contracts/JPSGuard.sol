@@ -5,7 +5,17 @@ pragma solidity ^0.8.28;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./base/ERC4671.sol";
 
-contract JPStackerGuard is ERC4671, Ownable {
+contract JPSGuard is ERC4671, Ownable {
+    /* Errors */
+    error JPSGuard_NotManager();
+    error JPSGuard_InactiveToken();
+    error JPSGuard_InvalidServiceID();
+    error JPSGuard_InvalidTokenId();
+    error JPSGuard_NotWhitelistedToken();
+    error JPSGuard_NotWhitelisted();
+    error JPSGuard_InsufficientFundsSent();
+    error JPSGuard_TokenLimitExceeded();
+
     enum ServiceStatus {
         Public,
         Private,
@@ -43,19 +53,30 @@ contract JPStackerGuard is ERC4671, Ownable {
     event TokenMinted(address indexed _owner, uint256 indexed _tokenId);
 
     modifier onlyManager(uint256 _serviceId) {
-        require(services[_serviceId].manager == msg.sender, "onlyManager");
+        require(services[_serviceId].manager == msg.sender, JPSGuard_NotManager());
         _;
     }
 
-    modifier onlyActiveService(uint256 _serviceId) {
-        require(services[_serviceId].active , "InactiveToken");
+    modifier checkServiceID(uint256 _serviceId) {
+        require(_serviceId <= serviceCount, JPSGuard_InvalidServiceID());
         _;
     }
 
-    modifier validServiceID(uint256 _serviceId) {
-        require(_serviceId <= serviceCount, "Invalid Service ID");
+    modifier checkServiceActive(uint256 _serviceId) {
+        require(services[_serviceId].active , JPSGuard_InactiveToken());
         _;
     }
+
+    modifier checkService(
+        uint256 _serviceId,
+        ServiceStatus _status
+    ) {
+        require(_serviceId <= serviceCount, JPSGuard_InvalidServiceID());
+        require(services[_serviceId].manager == msg.sender, JPSGuard_NotManager());
+        require(services[_serviceId].status == _status, JPSGuard_InvalidTokenId());
+        _;
+    }
+
 
     constructor(
         string memory _uri
@@ -102,17 +123,21 @@ contract JPStackerGuard is ERC4671, Ownable {
     function mintPublicToken(
         address _user,
         uint256 _serviceId
-    ) external onlyActiveService(_serviceId) {
-        require(services[_serviceId].status == ServiceStatus.Public, "NotPublicToken");
+    ) 
+        external 
+        checkService(_serviceId, ServiceStatus.Public) 
+    {
         _mintToken(_user, _serviceId);
-    }
+    }  
 
-    function mintWhitelistedToken(
+     function mintWhitelistedToken(
         address _user,
         uint256 _serviceId
-    ) external onlyActiveService(_serviceId) {
-        require(services[_serviceId].status == ServiceStatus.Whitelisted, "NotWhitelistedToken");
-        require(isWhitelisted[_serviceId][_user], "UserNotWhitelisted");
+    ) 
+        external 
+        checkService(_serviceId, ServiceStatus.Whitelisted) 
+    {
+        require(isWhitelisted[_serviceId][_user], JPSGuard_NotWhitelisted());
         _mintToken(_user, _serviceId);
     }
     
@@ -120,44 +145,55 @@ contract JPStackerGuard is ERC4671, Ownable {
     function mintPrivateToken(
         address _user,
         uint256 _serviceId
-    ) external onlyOwner onlyActiveService(_serviceId) {
-        require(
-            services[_serviceId].status == ServiceStatus.Private,
-            "NotPrivateToken"
-        );
+    ) 
+        external onlyOwner 
+        checkService(_serviceId, ServiceStatus.Private) 
+    {
         _mintToken(_user, _serviceId);
     }
 
     function mintServiceToken(
         address _user,
         uint256 _serviceId
-    ) external onlyManager(_serviceId) onlyActiveService(_serviceId) {
-        require(
-            services[_serviceId].status == ServiceStatus.Service,
-            "NotServiceToken"
-        );
+    ) 
+        external 
+        onlyManager(_serviceId) 
+        checkService(_serviceId, ServiceStatus.Service) 
+    {
         _mintToken(_user, _serviceId);
     }
 
     function mintPaidToken(
         address _user,
         uint256 _serviceId
-    ) external payable onlyManager(_serviceId) onlyActiveService(_serviceId) {
-        require(services[_serviceId].status == ServiceStatus.Paid, "NotPaidToken");
-        require(services[_serviceId].price == msg.value, "InsufficientEtherSent");
+    ) 
+        external 
+        payable 
+        onlyManager(_serviceId) 
+        checkService(_serviceId, ServiceStatus.Paid) 
+    {
+        require(services[_serviceId].price <= msg.value, JPSGuard_InsufficientFundsSent());
         _mintToken(_user, _serviceId);
     }
 
     function _mintToken(
         address _user, 
         uint256 _serviceId
-    ) private {
-        require(_serviceId <= serviceCount, "InvalidServiceID");
+    ) private  {
+        require(tokenIds[_user].length < services[_serviceId].tokenLimit, JPSGuard_TokenLimitExceeded());
         uint256 tokenId =  _mint(_user);
         tokenIds[_user].push(tokenId);
         setTokenURI(tokenId, services[_serviceId].uri);
         emit TokenMinted(_user, tokenId);
     }
+
+    // function revokeToken(address _user, uint256 _tokenId) external onlyManager(_serviceIdFromToken(_tokenId)) {
+    //     require(isValid(_tokenId), "Invalid token");
+    //     require(ownerOf(_tokenId) == _user, "User does not own this token");
+    //     _burn(_tokenId); // Assumes ERC4671 has a burn function or you implement it
+    //     // Remove tokenId from tokenIds[_user] array (logic needed to handle array removal)
+    //     emit TokenRevoked(_user, _tokenId);
+    // }
 
     function getUserIDs(
         address _user
@@ -169,7 +205,12 @@ contract JPStackerGuard is ERC4671, Ownable {
         address _user,
         uint256 _serviceId,
         bool _status
-    ) external onlyManager(_serviceId) returns (bool) {
+    ) 
+        external 
+        onlyManager(_serviceId) 
+        checkServiceID(_serviceId) 
+        returns (bool) 
+    {
         isWhitelisted[_serviceId][_user] = _status;
         return true;
     }
@@ -178,51 +219,56 @@ contract JPStackerGuard is ERC4671, Ownable {
         address[] memory _users,
         uint256 _serviceId,
         bool _status
-    ) external onlyManager(_serviceId) returns (bool) {
+    ) 
+        external 
+        onlyManager(_serviceId) 
+        checkServiceID(_serviceId) 
+        returns (bool) 
+    {
         for (uint256 i = 0; i < _users.length; i++)
             isWhitelisted[_serviceId][_users[i]] = _status;
         return true;
     }
 
-    function updatServiceManager(
+    function updateServiceManager(
         address _manager,
         uint256 _serviceId
-    ) external onlyOwner validServiceID(_serviceId) {
+    ) external onlyOwner checkServiceID(_serviceId) {
         services[_serviceId].manager = _manager;
     }
 
-    function updatServiceURI(
+    function updateServiceURI(
         string memory _uri,
         uint256 _serviceId
-    ) external onlyManager(_serviceId) validServiceID(_serviceId) {
+    ) external onlyManager(_serviceId) checkServiceID(_serviceId) {
         services[_serviceId].uri = _uri;
     }
 
-    function updatServiceTokenLimit(
+    function updateServiceTokenLimit(
         uint256 _serviceId,
         uint64 _tokenLimit
-    ) external onlyManager(_serviceId) validServiceID(_serviceId) {
+    ) external onlyManager(_serviceId) checkServiceID(_serviceId) {
         services[_serviceId].tokenLimit = _tokenLimit;
     }
 
-    function updatServiceActiveStatus(
+    function updateServiceActiveStatus(
         uint256 _serviceId,
         bool _active
-    ) external onlyManager(_serviceId) validServiceID(_serviceId) {
+    ) external onlyManager(_serviceId) checkServiceID(_serviceId) {
         services[_serviceId].active = _active;
     }
 
-    function updatServiceStatus(
+    function updateServiceStatus(
         uint256 _serviceId,
         ServiceStatus _status
-    ) external onlyManager(_serviceId) validServiceID(_serviceId) {
+    ) external onlyManager(_serviceId) checkServiceID(_serviceId) {
         services[_serviceId].status = _status;
     }
 
-    function updatServicePrice(
+    function updateServicePrice(
         uint256 _serviceId,
         uint256 _price
-    ) external onlyManager(_serviceId) validServiceID(_serviceId) {
+    ) external onlyManager(_serviceId) checkServiceID(_serviceId) {
         services[_serviceId].price = _price;
     }
 }

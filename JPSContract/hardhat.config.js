@@ -13,8 +13,8 @@ module.exports = {
       },
     },
   },
-  contractSizer: {
-    runOnCompile: true,
-    strict: true,
-  },
+  // contractSizer: {
+  //   runOnCompile: true,
+  //   strict: true,
+  // },
 };

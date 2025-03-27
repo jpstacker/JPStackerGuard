@@ -1,0 +1,79 @@
+//
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
+const hre = require("hardhat");
+const { extractCntParams } = require("./_utils");
+
+//
+describe("JPStaking Complete Unit Testing", async () => {
+  let [owner, user, cnt] = ["", [], null];
+
+  beforeEach(async () => {
+    const [account01, ...account02] = await ethers.getSigners();
+    owner = account01;
+    user = account02;
+
+    cnt = await hre.ethers.deployContract("JPStaking", [user[0].address]);
+  });
+
+  describe("JPStaking Basic Functional Testing", () => {
+    //
+    it("Verifying common names", async () => {
+      //   console.log(extractCntParams(cnt.interface.fragments));
+    });
+  });
+});
+
+// endICO() => ()
+// contribute() => ()
+// name() => ( string)
+// paused() => ( bool)
+// claimRewards() => ()
+// owner() => ( address)
+// symbol() => ( string)
+// withdrawFunds() => ()
+// decimals() => ( uint8)
+// icoActive() => ( bool)
+// icoPrice() => ( uint256)
+// burn(value uint256) => ()
+// renounceOwnership() => ()
+// icoEndTime() => ( uint256)
+// rewardPool() => ( uint256)
+// nftContract() => ( address)
+// totalRaised() => ( uint256)
+// totalStaked() => ( uint256)
+// totalSupply() => ( uint256)
+// TOTAL_SUPPLY() => ( uint256)
+// proposalCount() => ( uint256)
+// ICO_ALLOCATION() => ( uint256)
+// baseRewardRate() => ( uint256)
+// userTier( address) => ( uint8)
+// STAKING_REWARDS() => ( uint256)
+// MAX_CONTRIBUTION() => ( uint256)
+// MIN_CONTRIBUTION() => ( uint256)
+// totalParticipants() => ( uint256)
+// unstake(_stakeIndex uint256) => ()
+// rewardAdjustmentFactor() => ( uint256)
+// userLastUpdate( address) => ( uint256)
+// hasVoted( address,  uint256) => ( bool)
+// balanceOf(account address) => ( uint256)
+// userStakedAmount( address) => ( uint256)
+// createProposal(_description string) => ()
+// transferOwnership(newOwner address) => ()
+// executeProposal(_proposalId uint256) => ()
+// getUserStakes(_user address) => ( tuple[])
+// userPendingRewards( address) => ( uint256)
+// userGovernancePower( address) => ( uint256)
+// getTotalRewards(_user address) => ( uint256)
+// updateBaseRewardRate(_newRate uint256) => ()
+// burnFrom(account address, value uint256) => ()
+// transfer(to address, value uint256) => ( bool)
+// vote(_proposalId uint256, _support bool) => ()
+// approve(spender address, value uint256) => ( bool)
+// allowance(owner address, spender address) => ( uint256)
+// transferFrom(from address, to address, value uint256) => ( bool)
+// calculateReward(_user address, _stakeIndex uint256) => ( uint256)
+// stake(_amount uint256, _lockPeriod uint256, _nftId uint256) => ()
+// tiers( uint8) => (minStake uint256, rewardMultiplier uint256, lockPeriod uint256, maxStake uint256, nftBoost uint256)
+// userStakes( address,  uint256) => (amount uint256, startTime uint256, lockPeriod uint256, tier uint8, active bool, nftBoostId uint256)
+// proposals( uint256) => (id uint256, description string, startTime uint256, endTime uint256, yesVotes uint256, noVotes uint256, executed bool, proposer address)

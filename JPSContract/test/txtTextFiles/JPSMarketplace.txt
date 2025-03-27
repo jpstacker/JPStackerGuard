@@ -1,0 +1,79 @@
+//
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
+const hre = require("hardhat");
+const { extractCntParams } = require("./_utils");
+
+//
+describe("JPSMarketplace Complete Unit Testing", async () => {
+  let [owner, user, cnt] = ["", [], null];
+
+  beforeEach(async () => {
+    const [account01, ...account02] = await ethers.getSigners();
+    owner = account01;
+    user = account02;
+
+    cnt = await hre.ethers.deployContract("JPSMarketplace", [
+      1,
+      1000000,
+      25,
+      user[0].address,
+      user[1].address,
+    ]);
+  });
+
+  describe("JPSMarketplace Basic Functional Testing", () => {
+    //
+    it("Verifying common names", async () => {
+      //   console.log(extractCntParams(cnt.interface.fragments));
+    });
+  });
+});
+
+// pause() => ()
+// unpause() => ()
+// name() => ( string)
+// paused() => ( bool)
+// owner() => ( address)
+// symbol() => ( string)
+// renounceOwnership() => ()
+// totalSupply() => ( uint256)
+// feeRecipient() => ( address)
+// maxPerWallet() => ( uint256)
+// paymentToken() => ( address)
+// FEE_PRECISION() => ( uint256)
+// marketplaceFee() => ( uint256)
+// PRICE_PRECISION() => ( uint256)
+// remainingSupply() => ( uint256)
+// updateFee(_newFee uint256) => ()
+// endAuction(_tokenId uint256) => ()
+// balanceOf(owner address) => ( uint256)
+// ownerOf(tokenId uint256) => ( address)
+// tokenURI(tokenId uint256) => ( string)
+// rarityMultipliers( uint8) => ( uint256)
+// walletPurchases( address) => ( uint256)
+// transferOwnership(newOwner address) => ()
+// approve(to address, tokenId uint256) => ()
+// getApproved(tokenId uint256) => ( address)
+// pendingWithdrawals( address) => ( uint256)
+// recentSalesVelocity( uint256) => ( uint256)
+// getCurrentPrice(_rarity uint8) => ( uint256)
+// getTokenDetails(_tokenId uint256) => ( tuple)
+// buyNFT(_tokenId uint256, _useERC20 bool) => ()
+// getPriceHistory(_tokenId uint256) => ( tuple[])
+// placeBid(_tokenId uint256, _useERC20 bool) => ()
+// supportsInterface(interfaceId bytes4) => ( bool)
+// setApprovalForAll(operator address, approved bool) => ()
+// isApprovedForAll(owner address, operator address) => ( bool)
+// transferFrom(from address, to address, tokenId uint256) => ()
+// safeTransferFrom(from address, to address, tokenId uint256) => ()
+// safeTransferFrom(from address, to address, tokenId uint256, data bytes) => ()
+// listNFT(_tokenId uint256, _price uint256, _acceptsERC20 bool, _duration uint256) => ()
+// priceHistory( uint256,  uint256) => (timestamp uint256, price uint256, supplyAtTime uint256)
+// mintNFT(_tokenURI string, _category string, _rarity uint8, _royaltyPercentage uint256) => ( uint256)
+// listings( uint256) => (tokenId uint256, price uint256, seller address, active bool, acceptsERC20 bool, expiration uint256)
+// startAuction(_tokenId uint256, _reservePrice uint256, _duration uint256, _acceptsERC20 bool, _extensionTime uint256) => ()
+// updatePricingConfig(_demandMultiplier uint256, _scarcityMultiplier uint256, _timeDelayFactor uint256, _velocityFactor uint256) => ()
+// tokenData( uint256) => (rarity uint8, royaltyPercentage uint256, royaltyRecipient address, mintTime uint256, lastSalePrice uint256, saleCount uint256, category string)
+// pricingConfig() => (basePrice uint256, demandMultiplier uint256, scarcityMultiplier uint256, timeDelayFactor uint256, velocityFactor uint256, adjustmentInterval uint256, lastAdjustmentTime uint256, minPrice uint256, maxPrice uint256)
+// auctions( uint256) => (tokenId uint256, currentPrice uint256, reservePrice uint256, duration uint256, startTime uint256, lastBidTime uint256, highestBidder address, highestBid uint256, active bool, acceptsERC20 bool, extensionTime uint256)

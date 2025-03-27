@@ -1,0 +1,122 @@
+//
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
+const hre = require("hardhat");
+
+//
+describe("JPSGaurd Complete Unit Testing", async () => {
+  let [owner, user, cnt] = ["", [], null];
+  const zeroAddress = "0x0000000000000000000000000000000000000000";
+
+  beforeEach(async () => {
+    const [account01, ...account02] = await ethers.getSigners();
+    owner = account01;
+    user = account02;
+
+    cnt = await hre.ethers.deployContract("JPSGuard", ["JPSI-URI", 5]);
+  });
+
+  const isArr = (arr) => (Array.isArray(arr) ? arr : []);
+
+  const getStringPara = (P1) =>
+    isArr(P1)
+      .map(({ name, type }) => `${name} ${type}`)
+      .join(", ");
+
+  const extractCntParams = (P00) => {
+    let P01 = isArr(P00)?.filter(({ type }) => type === "function");
+    P01 = P01.map(
+      ({ name, inputs: P1, outputs: O1 }) =>
+        `${name}(${getStringPara(P1)}) => (${getStringPara(O1)})`
+    );
+    P01.sort((a, b) => a.length - b.length);
+    return P01;
+  };
+
+  const toNumber = (vl) => ethers.BigNumber.from(vl).toNumber();
+
+  describe("JPSI Basic Functional Testing", () => {
+    //
+    it("Verifying common names", async () => {
+      console.log(extractCntParams(cnt.interface.fragments));
+      // expect(await cnt.name()).equal("JPStacker Guard");
+      // expect(await cnt.symbol()).equal("JPSG");
+      // expect(await cnt.owner()).equal(owner.address);
+      // await cnt.renounceOwnership();
+      // expect(await cnt.owner()).equal(zeroAddress);
+    });
+    //
+    // it("Running basic functions", async () => {
+    //   expect(await cnt.owner()).equal(owner.address);
+    //   expect(await cnt.emittedCount()).equal(0);
+    //   expect(await cnt.holdersCount()).equal(0);
+    //   expect(await cnt.serviceCount()).equal(1);
+
+    //   expect(await cnt.isWhitelisted(1, user[0].address)).equal(false);
+    //   const srv01 = await cnt.services(1);
+    //   expect(srv01[0]).equal("JPSI-URI");
+    //   expect(srv01[1]).equal(owner.address);
+    //   expect(srv01[2]).equal(0);
+    //   expect(srv01[4]).equal(0);
+    //   expect(srv01[5]).equal(true);
+    // });
+    //
+    // it("Running Intermidiate functions", async () => {
+    //   expect(await cnt.isWhitelisted(1, user[0].address)).equal(false);
+    //   await cnt.updateWhitelist(user[0].address, 1, true);
+    //   expect(await cnt.isWhitelisted(1, user[0].address)).equal(true);
+    //   await cnt.updateWhitelist(user[0].address, 2, true).should.be.rejected;
+    //   expect(await cnt.isWhitelisted(1, user[1].address)).equal(false);
+    //   expect(await cnt.isWhitelisted(1, user[2].address)).equal(false);
+    //   expect(await cnt.isWhitelisted(1, user[3].address)).equal(false);
+    //   await cnt.updateWhitelistBatch(
+    //     [user[1].address, user[2].address, user[3].address],
+    //     1,
+    //     true
+    //   );
+    //   expect(await cnt.isWhitelisted(1, user[1].address)).equal(true);
+    //   expect(await cnt.isWhitelisted(1, user[2].address)).equal(true);
+    //   expect(await cnt.isWhitelisted(1, user[3].address)).equal(true);
+    // });
+  });
+});
+
+// withdraw() => ()
+// name() => ( string)
+// owner() => ( address)
+// symbol() => ( string)
+// renounceOwnership() => ()
+// emittedCount() => ( uint256)
+// holdersCount() => ( uint256)
+// serviceCount() => ( uint256)
+// i_Transaction_Fee() => ( uint256)
+// hasValid(owner address) => ( bool)
+// serviceIds( uint256) => ( uint256)
+// isValid(tokenId uint256) => ( bool)
+// balanceOf(owner address) => ( uint256)
+// ownerOf(tokenId uint256) => ( address)
+// tokenURI(_tokenId uint256) => ( string)
+// tokenByIndex(index uint256) => ( uint256)
+// transferOwnership(newOwner address) => ()
+// tokenIds( address,  uint256) => ( uint256)
+// isWhitelisted( uint256,  address) => ( bool)
+// supportsInterface(interfaceId bytes4) => ( bool)
+// revokeToken(_user address, _tokenId uint256) => ()
+// tokensOfOwner(owner address) => (tokens uint256[])
+// setTokenURI(tokenId uint256, tokenUri string) => ()
+// mintPaidToken(_user address, _serviceId uint256) => ()
+// updateServiceURI(_uri string, _serviceId uint256) => ()
+// mintPublicToken(_user address, _serviceId uint256) => ()
+// mintPrivateToken(_user address, _serviceId uint256) => ()
+// mintServiceToken(_user address, _serviceId uint256) => ()
+// updateServiceActive(_serviceId uint256, _active bool) => ()
+// updateServicePrice(_serviceId uint256, _price uint256) => ()
+// mintWhitelistedToken(_user address, _serviceId uint256) => ()
+// tokenOfOwnerByIndex(owner address, index uint256) => ( uint256)
+// updateServiceManager(_manager address, _serviceId uint256) => ()
+// fetchUserIDs(_user address, _start uint8, _limit uint8) => ( uint256[])
+// updateServiceRemainingTokens(_serviceId uint256, _tokenCount uint64) => ()
+// updateWhitelist(_user address, _serviceId uint256, _status bool) => ( bool)
+// updateWhitelistBatch(_users address[], _serviceId uint256, _status bool) => ( bool)
+// services( uint256) => (uri string, manager address, price uint256, remainingTokens uint64, status uint8, isLimitedToken bool, active bool)
+// registerService(_uri string, _manager address, _price uint256, _tokenCount uint64, _status uint8, _isLimitedToken bool, _active bool) => ( uint256)

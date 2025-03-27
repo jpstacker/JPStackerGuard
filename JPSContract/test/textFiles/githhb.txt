@@ -1,0 +1,85 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const NFTStorage = () => {
+    const [metadata, setMetadata] = useState({
+        name: '',
+        description: '',
+        image: '',
+    });
+    const [storedMetadata, setStoredMetadata] = useState(null);
+    const [error, setError] = useState('');
+
+    // Function to handle metadata submission
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            // Replace with your actual API endpoint
+            const response = await axios.post('https://your-api-endpoint.com/store', metadata);
+            console.log('Data stored:', response.data);
+            setMetadata({ name: '', description: '', image: '' }); // Reset form
+        } catch (err) {
+            setError('Error storing metadata: ' + err.message);
+        }
+    };
+
+    // Function to retrieve metadata
+    const handleRetrieve = async (id) => {
+        try {
+            const response = await axios.get(`https://your-api-endpoint.com/retrieve/${id}`);
+            setStoredMetadata(response.data);
+        } catch (err) {
+            setError('Error retrieving metadata: ' + err.message);
+        }
+    };
+
+    return (
+        <div>
+            <h2>Store NFT Metadata</h2>
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="Name"
+                    value={metadata.name}
+                    onChange={(e) => setMetadata({ ...metadata, name: e.target.value })}
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Description"
+                    value={metadata.description}
+                    onChange={(e) => setMetadata({ ...metadata, description: e.target.value })}
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Image URL"
+                    value={metadata.image}
+                    onChange={(e) => setMetadata({ ...metadata, image: e.target.value })}
+                    required
+                />
+                <button type="submit">Store Metadata</button>
+            </form>
+
+            <h2>Retrieve NFT Metadata</h2>
+            <input
+                type="text"
+                placeholder="Enter ID to retrieve"
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        handleRetrieve(e.target.value);
+                    }
+                }}
+            />
+            {storedMetadata && (
+                <div>
+                    <h3>Retrieved Metadata:</h3>
+                    <pre>{JSON.stringify(storedMetadata, null, 2)}</pre>
+                </div>
+            )}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+        </div>
+    );
+};
+
+export default NFTStorage;

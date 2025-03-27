@@ -1,0 +1,22 @@
+//
+export const zeroAddress = "0x0000000000000000000000000000000000000000";
+
+//
+export const isArr = (arr) => (Array.isArray(arr) ? arr : []);
+export const toNumber = (vl) => ethers.BigNumber.from(vl).toNumber();
+
+//
+export const getStringPara = (P1) =>
+  isArr(P1)
+    .map(({ name, type }) => `${name} ${type}`)
+    .join(", ");
+
+export const extractCntParams = (P00) => {
+  let P01 = isArr(P00)?.filter(({ type }) => type === "function");
+  P01 = P01.map(
+    ({ name, inputs: P1, outputs: O1 }) =>
+      `${name}(${getStringPara(P1)}) => (${getStringPara(O1)})`
+  );
+  P01.sort((a, b) => a.length - b.length);
+  return P01;
+};

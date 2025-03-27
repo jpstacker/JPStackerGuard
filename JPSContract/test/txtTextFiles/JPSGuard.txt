@@ -1,0 +1,65 @@
+//
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
+const hre = require("hardhat");
+const { extractCntParams } = require("./_utils");
+
+//
+describe("JPSGaurd Complete Unit Testing", async () => {
+  let [owner, user, cnt] = ["", [], null];
+
+  beforeEach(async () => {
+    const [account01, ...account02] = await ethers.getSigners();
+    owner = account01;
+    user = account02;
+
+    cnt = await hre.ethers.deployContract("JPSGuard", ["JPSI-URI", 5]);
+  });
+
+  describe("JPSI Basic Functional Testing", () => {
+    //
+    it("Verifying common names", async () => {
+      //   console.log(extractCntParams(cnt.interface.fragments));
+    });
+  });
+});
+
+// withdraw() => ()
+// name() => ( string)
+// owner() => ( address)
+// symbol() => ( string)
+// renounceOwnership() => ()
+// emittedCount() => ( uint256)
+// holdersCount() => ( uint256)
+// serviceCount() => ( uint256)
+// i_Transaction_Fee() => ( uint256)
+// hasValid(owner address) => ( bool)
+// serviceIds( uint256) => ( uint256)
+// isValid(tokenId uint256) => ( bool)
+// balanceOf(owner address) => ( uint256)
+// ownerOf(tokenId uint256) => ( address)
+// tokenURI(_tokenId uint256) => ( string)
+// tokenByIndex(index uint256) => ( uint256)
+// transferOwnership(newOwner address) => ()
+// tokenIds( address,  uint256) => ( uint256)
+// isWhitelisted( uint256,  address) => ( bool)
+// supportsInterface(interfaceId bytes4) => ( bool)
+// revokeToken(_user address, _tokenId uint256) => ()
+// tokensOfOwner(owner address) => (tokens uint256[])
+// setTokenURI(tokenId uint256, tokenUri string) => ()
+// mintPaidToken(_user address, _serviceId uint256) => ()
+// updateServiceURI(_uri string, _serviceId uint256) => ()
+// mintPublicToken(_user address, _serviceId uint256) => ()
+// mintPrivateToken(_user address, _serviceId uint256) => ()
+// mintServiceToken(_user address, _serviceId uint256) => ()
+// updateServiceActive(_serviceId uint256, _active bool) => ()
+// updateServicePrice(_serviceId uint256, _price uint256) => ()
+// mintWhitelistedToken(_user address, _serviceId uint256) => ()
+// tokenOfOwnerByIndex(owner address, index uint256) => ( uint256)
+// updateServiceManager(_manager address, _serviceId uint256) => ()
+// fetchUserIDs(_user address, _start uint8, _limit uint8) => ( uint256[])
+// updateServiceRemainingTokens(_serviceId uint256, _tokenCount uint64) => ()
+// updateWhitelist(_user address, _serviceId uint256, _status bool) => ( bool)
+// updateWhitelistBatch(_users address[], _serviceId uint256, _status bool) => ( bool)
+// services( uint256) => (uri string, manager address, price uint256, remainingTokens uint64, status uint8, isLimitedToken bool, active bool)
+// registerService(_uri string, _manager address, _price uint256, _tokenCount uint64, _status uint8, _isLimitedToken bool, _active bool) => ( uint256)

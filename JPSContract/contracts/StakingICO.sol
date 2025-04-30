@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract JPStaking is ERC20, ERC20Burnable, Ownable, ReentrancyGuard, Pausable {
 
-    // --- Token Configuration ---
+    // --- Token Configuration --- 
     uint256 public constant TOTAL_SUPPLY = 1_000_000_000 * 10**18; // 1B tokens
     uint256 public constant ICO_ALLOCATION = 400_000_000 * 10**18; // 40% for ICO
     uint256 public constant STAKING_REWARDS = 300_000_000 * 10**18; // 30% for staking

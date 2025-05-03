@@ -557,4 +557,22 @@ describe("JPSGuard", function () {
       expect(page3[0]).to.equal(5);
     });
   });
+
+  // it("Show Methods", async function () {
+  //   const isArr = (arr) => (Array.isArray(arr) ? arr : []);
+
+  //   const getMethod = (P1) =>
+  //     isArr(P1)
+  //       .map(({ name, type }) => `${name} ${type}`)
+  //       .join(", ");
+
+  //   let methods = isArr(jpsGuard.interface.fragments);
+  //   methods = methods.filter(({ type }) => type === "function");
+
+  //   console.log("\n\n**********  JPSGuard>>  **********\n");
+  //   methods = methods.map(({ name: N, inputs: V1, outputs: V2 }) =>
+  //     console.log(`${N}(${getMethod(V1)}) => (${getMethod(V2)})`)
+  //   );
+  //   console.log("\n**********  <<JPSGuard  **********\n\n");
+  // });
 });
